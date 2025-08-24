@@ -11,3 +11,8 @@ uv run panel serve /Users/juliusbusecke/Code/pv-xarray-gallery/scripts/icechunk_
 ```
 
 <img src="./content/gifs/icechunk_timetravel.gif" alt="Animation showing icechunk timetravel example" style="width: 400px" />
+
+## Data Examples
+
+### Ocean Oxygen
+
