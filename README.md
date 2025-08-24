@@ -14,5 +14,12 @@ uv run panel serve /Users/juliusbusecke/Code/pv-xarray-gallery/scripts/icechunk_
 
 ## Data Examples
 
-### Ocean Oxygen
+**`scripts/omz.py`** shows an animation over the climatology of Oxygen Minimum Zones (from World Ocean Atlas Data) in relation to the ocean bathymetry.
 
+```bash
+uv run scripts/omz.py
+```
+>[!NOTE]
+> The script was run from a local copy of the very high res bathymetry data. The streaming version (commented out) will basically download the entire netcdf file. I am planning to upload this data to source.coop at some point in the future. 
+
+<img src="./content/gifs/omz.gif" alt="Animation showing icechunk timetravel example" style="width: 400px" />

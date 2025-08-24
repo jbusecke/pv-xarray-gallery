@@ -3,11 +3,11 @@ import xarray as xr
 import matplotlib.pyplot as plt
 from dask.diagnostics import ProgressBar
 from scipy.ndimage import gaussian_filter
-import fsspec
+
 
 def shift_lon(ds:xr.Dataset, shift:int) -> xr.Dataset:
-    lon = ds.lon
-    ds = ds.assign_coords(lon = lon.where(lon>0+shift, 360+lon+shift).data)
+    lon = ds.lon + shift
+    ds = ds.assign_coords(lon = lon.where(lon>0, 360+lon).data)
     return ds.sortby('lon')
 
 # subsample
@@ -22,6 +22,7 @@ with ProgressBar():
     z = ds_elevation.elevation.coarsen(lon=factor, lat=factor).mean()
 
 # print("Downloading GEBCO 2025 data (1.7GB), this may take a while...")
+# import fsspec
 # with fsspec.open("https://dap.ceda.ac.uk/bodc/gebco/global/gebco_2025/ice_surface_elevation/netcdf/GEBCO_2025.nc", mode='rb') as f:
 #     ds_elevation = xr.open_dataset(f, chunks={'lon':3000, 'lat':3000})
 
@@ -30,9 +31,7 @@ with ProgressBar():
 #         z = ds_elevation.elevation.coarsen(lon=factor, lat=factor).mean().load()
 
 # convert to 0-360 convention (doesnt cut the pacific)
-lon = z.lon
-z = z.assign_coords(lon = lon.where(lon>0, 360+lon).data)
-z = z.sortby('lon')
+z = shift_lon(z, shift=-30)
 
 # smooth only the ocean
 smoothed_z = z.copy(deep=True)
@@ -57,9 +56,7 @@ ds = xr.open_dataset(store, engine='zarr', chunks={})
 with ProgressBar():
     obs = ds.o_an.load()
 
-lon = ds.lon
-obs = obs.assign_coords(lon = lon.where(lon>0, 360+lon).data)
-obs = obs.sortby('lon')
+obs = shift_lon(obs, shift=-30)
 
 obs.coords['depth'] = -obs['depth']
 
@@ -82,6 +79,7 @@ p.add_mesh(
 def get_o2_isosurface(da:xr.DataArray):
     o2_mesh = da.pyvista.mesh(x="lon", y="lat", z='depth')
     return o2_mesh.contour(isosurfaces=[10, 40, 80])
+    # return o2_mesh.contour(isosurfaces=range(0, 100, 10))
 
 iso = p.add_mesh(
     get_o2_isosurface(obs.isel(time=0)),
