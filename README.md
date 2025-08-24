@@ -10,4 +10,4 @@
 uv run panel serve /Users/juliusbusecke/Code/pv-xarray-gallery/scripts/icechunk_timetravel.py --show
 ```
 
-<img src="./content/gifs/icechunk_timetravel.gif" alt="Animation showing icechunk timetravel example" style="width: 100%; max-width: 600px; display: block; margin: 1em 0;" />
+<img src="./content/gifs/icechunk_timetravel.gif" alt="Animation showing icechunk timetravel example" style="width: 600px" />
